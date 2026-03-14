@@ -1,62 +1,81 @@
-//Finally Understood the logic of linked list took longer than expected time
 #include <iostream>
 using namespace std;
 
-struct node{
+struct Node{
     int data;
-    node* next;
+    Node* next;
 };
 
-class Linked{
-    node* head;
-    node* tail;
-    public:
-    Linked(){
+class LinkedList{
+    Node* head;
+    Node* tail;
+ public:
+    LinkedList(){
         head = tail = NULL;
     }
+
+    //Inserting From Front
+
+        void Insert_at_Front(int val){
+            Node* newnode = new Node();
+            newnode->data = val;
+            newnode->next = NULL;
+            if(head==NULL){
+                head = tail = newnode;
+            }else{
+               newnode->next = head;
+               head =  newnode;
+            }
+            cout<<"Value "<<val<<" has Successfully Inserted in LinkedList at front"<<endl;
+        }
+
+    //Deletion From Front
     
-    void insert_front(int value){
-        node* newnode = new node();
-        newnode->data = value;
-        newnode->next = NULL;
-        if(head==NULL){
-            head = tail = newnode;
-        }else{
-            newnode->next = head;
-            head = newnode;
-        }
-    }
-
-    void deletion_front(){
-
-        if(head==NULL){
-            cout<<"no Node Presents"<<endl;
+    void deletion_from_Front(){
+        
+        if(head == NULL){
+            cout<<"Deletion Not Possible: Linked List is Empty"<<endl;
             return;
         }
-        node *temp = head;
-        head = head->next;
-        delete temp;
-    }
-
-    void insert_back(int value){
-        node* newnode = new node();
-        newnode->data = value;
-        newnode->next = NULL;
-        if(tail==NULL){
-            head = tail = newnode;
-            return;
-        }
-
-        tail->next = newnode;
-        tail=newnode;
+        Node* temp = head;
+            head = temp->next;
+           
+            if(head == NULL){
+                tail = NULL;
+            }
+             delete temp;
         
     }
-    void deletion_back(){
-        if(tail==NULL){
-            cout<<"Linked list is empty"<<endl;
+
+    //Inserting from Back
+
+    void Inserting_From_Back(int val){
+        Node* newnode = new Node();
+        newnode->data = val;
+        newnode->next = NULL;
+        if(head==NULL){
+            head = tail = newnode;
             return;
-        }else{
-            node* temp = head;
+        }
+        tail->next = newnode;
+        tail = newnode;
+    }
+
+    //Deletion from Back
+
+    void Deletion_From_Back(){
+        if(head == NULL){
+            cout<<"Deletion Not Possible: Linked List is empty"<<endl;
+            return;
+        }
+
+
+        if(head == tail){
+            delete head;
+            head = tail =  NULL;
+            return;
+        }
+            Node* temp = head;
 
             while(temp->next != tail){
                 temp = temp->next;
@@ -64,60 +83,122 @@ class Linked{
             delete tail;
             tail = temp;
             tail->next = NULL;
-        }
+            
     }
 
-    void insert_at_pos(int val,int pos){
-        node* newnode = new node();
-        newnode->data = val;
+    //Inserting in the Middle of Linked List
+
+    void Inserting_in_Pos(int val,int pos){
+
+        if(pos<1){
+          cout<<"Invalid Position"<<endl;
+          return;
+        }
+
+        if(head == NULL){
+          cout<<"Cannot Inserted at "<<pos<<" as LinkedList is Empty"<<endl;
+          return;
+        }
         
         if(pos == 1){
-            newnode->next = head;
-            head = newnode;
+            Insert_at_Front(val);
+            return;
         }
-      node* temp = head;
-       for(int i = 1; i<pos-1; i++){
-              
-          temp = temp->next;
-            }
-      newnode->next =  temp->next;
-      temp->next = newnode;
+        Node* newnode = new Node();
+        newnode->data = val;
+        newnode->next = NULL;
 
-        
-    }
-
-    void print(){
-        node* temp = head;
-
-        while(temp!=NULL){
-            cout<<temp->data<<endl;
+          Node* temp = head;
+        for(int i = 1; i<pos-1 && temp != NULL; i++ ){
             temp = temp->next;
         }
+        if(temp == NULL){
+            cout<<"Position Out of Range"<<endl;
+            delete newnode;
+            return;
+        }
+        newnode->next = temp->next;
+        temp->next = newnode;  
+        if(newnode->next == NULL){
+            tail = newnode;
+        }
+
     }
+
+    //Deletion from Position
+
+    void Deletion_From_Postion(int pos){
+       
+         if(pos<1){
+          cout<<"Invalid Position"<<endl;
+          return;
+        }
+        if(head == NULL){
+            cout<<"Deletion Not Possible: Linked List is empty"<<endl;
+            return;
+        }
+        Node* temp = head;
+         if(pos == 1){
+            head = temp->next;
+            delete temp;
+            return;
+        }
+    for(int i = 1; i<pos-1 && temp!=NULL ;i++){
+        temp = temp->next;
+    }
+    if(temp==NULL || temp->next ==NULL){
+        cout<<"Out of Range"<<endl;
+        return;
+    }
+      Node* newtemp = temp->next;
+      temp->next = newtemp->next;
+      if(newtemp==tail){
+        tail = temp;
+      }
+      delete newtemp;
+
+
+
+    }
+
+    //Displaying the Linked List
+    
+    void display(){
+        Node* temp = head;
+        int idx = 1;
+       while(temp!=NULL){
+        cout<<"Value at index "<<idx<<" is "<<temp->data<<endl;
+        temp = temp->next;
+        idx++;
+       }
+    }
+        
 };
 
-int main(){
-     Linked ll;
-     ll.deletion_front();
-     ll.insert_front(5);
-     ll.insert_front(10);
-     ll.insert_front(20);
-     ll.insert_front(50);
-     cout<<"Before Deletion"<<endl;
-     ll.print();
-     cout<<"After Deletion"<<endl;
-     ll.deletion_front();
-     ll.print();
-     cout<<"Inserting from back"<<endl;
-     ll.insert_back(100);
-     ll.print();
-     cout<<"Deletion from back"<<endl;
-     ll.deletion_back();
-     ll.print();
-     cout<<"Inserting at position"<<endl;
-     ll.insert_at_pos(17,2);
-     ll.print();
 
-     return 0;
-     
+int main(){
+    LinkedList ll;
+    ll.Insert_at_Front(17);
+    ll.Insert_at_Front(13);
+    ll.Insert_at_Front(27);
+    ll.Insert_at_Front(36);
+    ll.Insert_at_Front(46);
+    ll.display();
+    ll.deletion_from_Front();
+    cout<<"Deletion From Front"<<endl;
+    ll.display();
+    cout<<"Inserting From Back"<<endl;
+    ll.Inserting_From_Back(87);
+    ll.display();
+    cout<<"Deletion From back"<<endl;
+    ll.Deletion_From_Back();
+    ll.display();
+    cout<<"Inserting At Position"<<endl;
+    ll.Inserting_in_Pos(91,2);
+    ll.display();
+    cout<<"Deleting From Position"<<endl;
+    ll.Deletion_From_Postion(4);
+    ll.display();
+
+    return 0;
 }
